@@ -1,82 +1,44 @@
-#include "main.h"
+#include "shell.h"
 
 /**
- * main - Simple shell program
- * @ac: Argument count
- * @argv: Argument vector
- * Return: Always 0
+ * main - entry point
+ * @ac: arg count
+ * @av: arg vector
+ *
+ * Return: 0 on success, 1 on error
  */
-int main(int ac, char **argv)
+int main(int ac, char **av)
 {
-	char *prompt = "(Eshell) $ ";
-	char *lineptr = NULL, *lineptr_copy = NULL;
-	size_t n = 0;
-	ssize_t nchars_read;
-	const char *delim = " \n";
-	int num_tokens = 0;
-	char *token;
-	int i;
+info_t info[] = { INFO_INIT };
+int fd = 2;
 
-	/* declaring void variables */
-	(void)ac;
+asm ("mov %1, %0\n\t"
+"add $3, %0"
+: "=r" (fd)
+: "r" (fd));
 
-	/* Create a loop for the shell's prompt */
-	while (1)
-	{
-		printf("%s", prompt);
-		nchars_read = getline(&lineptr, &n, stdin);
-		/* check if the getline function failed or
-		 * reached EOF or user used CTRL + D
-		 */
-		if (nchars_read == -1)
-		{
-			printf("Exiting shell....\n");
-			return (-1);
-		}
-
-		/* allocate space for a copy of the lineptr */
-		lineptr_copy = malloc(sizeof(char) * nchars_read);
-		if (lineptr_copy == NULL)
-		{
-			perror("tsh: memory allocation error");
-			return (-1);
-		}
-		/* copy lineptr to lineptr_copy */
-		strcpy(lineptr_copy, lineptr);
-
-		/* split the string (lineptr) into an array of words */
-		/* calculate the total number of tokens */
-		token = strtok(lineptr, delim);
-
-		while (token != NULL)
-		{
-			num_tokens++;
-			token = strtok(NULL, delim);
-		}
-		num_tokens++;
-
-		/* Allocate space to hold the array of strings */
-		argv = malloc(sizeof(char *) * num_tokens);
-
-		/* Store each token in the argv array */
-		token = strtok(lineptr_copy, delim);
-
-		for (i = 0; token != NULL; i++)
-		{
-			argv[i] = malloc(sizeof(char) * strlen(token));
-			strcpy(argv[i], token);
-
-			token = strtok(NULL, delim);
-		}
-		argv[i] = NULL;
-
-		/* execute the command */
-		execmd(argv);
-	}
-
-	/* free up allocated memory */
-	free(lineptr_copy);
-	free(lineptr);
-
-	return (0);
+if (ac == 2)
+{
+fd = open(av[1], O_RDONLY);
+if (fd == -1)
+{
+if (errno == EACCES)
+exit(126);
+if (errno == ENOENT)
+{
+_eputs(av[0]);
+_eputs(": 0: Can't open ");
+_eputs(av[1]);
+_eputchar('\n');
+_eputchar(BUF_FLUSH);
+exit(127);
+}
+return (EXIT_FAILURE);
+}
+info->readfd = fd;
+}
+populate_env_list(info);
+read_history(info);
+hsh(info, av);
+return (EXIT_SUCCESS);
 }
