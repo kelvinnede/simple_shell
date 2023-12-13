@@ -38,52 +38,78 @@
 extern char **environ;
 
 /**
- * Linked list structure for strings
+ * struct liststr - Linked list structure for strings
+ *
+ * @num: Numeric identifier
+ * @str: String data
+ * @next: Pointer to the next node in the list
  */
 typedef struct liststr
 {
-    int num;
-    char *str;
-    struct liststr *next;
+	int num;
+	char *str;
+	struct liststr *next;
 } list_t;
 
 /**
- * Structure containing pseudo-arguments for functions
+ * struct passinfo - Structure containing pseudo-arguments for functions
+ *
+ * @arg: Command argument string
+ * @argv: Command argument array
+ * @path: Path to the command
+ * @argc: Argument count
+ * @line_count: Line count
+ * @err_num: Error number
+ * @linecount_flag: Line count flag
+ * @fname: File name
+ * @env: Environment variable list
+ * @history: History list
+ * @alias: Alias list
+ * @environ: Environment variable array
+ * @env_changed: Environment changed flag
+ * @status: Command execution status
+ * @cmd_buf: Pointer to cmd ; chain buffer for memory management
+ * @cmd_buf_type: CMD_type ||, &&, ;
+ * @readfd: File descriptor for reading
+ * @histcount: History count
  */
 typedef struct passinfo
 {
-    char *arg;
-    char **argv;
-    char *path;
-    int argc;
-    unsigned int line_count;
-    int err_num;
-    int linecount_flag;
-    char *fname;
-    list_t *env;
-    list_t *history;
-    list_t *alias;
-    char **environ;
-    int env_changed;
-    int status;
+	char *arg;
+	char **argv;
+	char *path;
+	int argc;
+	unsigned int line_count;
+	int err_num;
+	int linecount_flag;
+	char *fname;
+	list_t *env;
+	list_t *history;
+	list_t *alias;
+	char **environ;
+	int env_changed;
+	int status;
 
-    char **cmd_buf; /* Pointer to cmd ; chain buffer, for memory management */
-    int cmd_buf_type; /* CMD_type ||, &&, ; */
-    int readfd;
-    int histcount;
+	char **cmd_buf; /* Pointer to cmd ; chain buffer, for memory management */
+	int cmd_buf_type; /* CMD_type ||, &&, ; */
+	int readfd;
+	int histcount;
 } info_t;
 
 #define INFO_INIT \
-    { NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
-      0, 0, 0 }
+	{ NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
+	  0, 0, 0 }
 
 /**
- * Structure for built-in commands
+ * struct builtin - Structure for built-in commands
+ *
+ * @type: Type of built-in command
+ * @func: Pointer to the corresponding function
  */
 typedef struct builtin
 {
-    char *type;
-    int (*func)(info_t *info);
+	char *type;
+	int (*func)(info_t *info);
 } builtin_table;
 
 /* Function prototypes */
@@ -124,7 +150,7 @@ int _putchar(char c);
 char *_strncpy(char *dest, char *str, int n);
 char *_strncat(char *dest, char *str, int n);
 char *_strchr(char *str, char d);
-char *strchr (const char *__s, int __c);
+char *strchr(const char *__s, int __c);
 
 /* Tokenization functions */
 char **strtow(char *str, char *d);
@@ -165,10 +191,9 @@ int set_alias(info_t *info, char *str);
 /* Getline functions */
 ssize_t get_input(info_t *info);
 int _getline(info_t *info, char **ptr, size_t *length);
-void sigintHandler(__attribute__((unused))int sig_num);
+void sigintHandler(__attribute__((unused)) int sig_num);
 ssize_t read_buf(info_t *info, char *buf, size_t *i);
 ssize_t input_buf(info_t *info, char **buf, size_t *len);
-
 
 /* Information handling functions */
 void clear_info(info_t *info);
@@ -209,10 +234,11 @@ list_t *node_starts_with(list_t *node, char *prefix, char c);
 ssize_t get_node_index(list_t *head, list_t *node);
 
 /* Variable handling functions */
-int is_chain(info_t *info, char *buf, size_t * p);
+int is_chain(info_t *info, char *buf, size_t *p);
 void check_chain(info_t *info, char *buf, size_t *p, size_t i, size_t len);
-int replace_alias(info_t * info);
+int replace_alias(info_t *info);
 int replace_vars(info_t *info);
 int replace_string(char **old, char *new);
 
 #endif
+
