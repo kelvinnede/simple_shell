@@ -12,22 +12,22 @@
 #include <fcntl.h>
 #include <errno.h>
 
-/* Constants for read/write buffers */
+/* These are Constants that read/write buffers */
 #define READ_BUF_SIZE 1024
 #define WRITE_BUF_SIZE 1024
 #define BUF_FLUSH -1
 
-/* Constants for command chaining */
+/* This are Constants that command chaining */
 #define CMD_NORM 0
 #define CMD_OR 1
 #define CMD_AND 2
 #define CMD_CHAIN 3
 
-/* Constants for convert_number() */
+/* This are Constants That convert_number() */
 #define CONVERT_LOWERCASE 1
 #define CONVERT_UNSIGNED 2
 
-/* Configuration: 1 if using system getline() */
+/* if using system getline */
 #define USE_GETLINE 0
 #define USE_STRTOK 0
 
@@ -38,7 +38,7 @@
 extern char **environ;
 
 /**
- * struct liststr - Linked list structure for strings
+ * struct liststr - This Linked list structure for strings
  *
  * @num: Numeric identifier
  * @str: String data
@@ -52,7 +52,7 @@ typedef struct liststr
 } list_t;
 
 /**
- * struct passinfo - Structure containing pseudo-arguments for functions
+ * struct passinfo - Structure containing pseudo-arguments
  *
  * @arg: Command argument string
  * @argv: Command argument array
@@ -226,14 +226,14 @@ size_t print_list_str(const list_t *h);
 int delete_node_at_index(list_t **head, unsigned int index);
 void free_list(list_t **head_ptr);
 
-/* More linked list functions */
+/* This is More linked list for functions */
 size_t list_len(const list_t *h);
 char **list_to_strings(list_t *head);
 size_t print_list(const list_t *h);
 list_t *node_starts_with(list_t *node, char *prefix, char c);
 ssize_t get_node_index(list_t *head, list_t *node);
 
-/* Variable handling functions */
+/* This is a Variable handling functions */
 int is_chain(info_t *info, char *buf, size_t *p);
 void check_chain(info_t *info, char *buf, size_t *p, size_t i, size_t len);
 int replace_alias(info_t *info);
